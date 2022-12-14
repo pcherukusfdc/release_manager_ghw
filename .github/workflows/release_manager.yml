@@ -83,7 +83,7 @@ jobs:
     steps:
     - id: step3
       name: call actions
-      if: ${{ success() }}
+      if: ${{ success() && steps.step1.outputs.fileList == 'release.txt' }}
       uses: pcherukusfdc/release_manager@main
       with:
         repo_name: '${{ github.repository }}'
