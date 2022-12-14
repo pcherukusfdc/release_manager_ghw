@@ -24,15 +24,17 @@ jobs:
         if [[ $FILES == 'release.txt' ]]
         then
           echo "Release.txt modified, procedding further to deploy the code on puppet master..."
+          echo "::set-output name=fileList::$(echo ${FILES})"
         else 
           echo ""
           echo "Either some other file modified along with the release.txt or only other files modified"
           echo "This workflow to merge changes in release.txt, exiting...."
+          echo "::set-output name=fileList::$(echo ${FILES})"
           echo ""
         fi
     - id: step2
       name: PR Approval and Merging
-      if: ${{ success() && $FILES == 'release.txt' }} 
+      if: ${{ success() && steps.step1.outputs.fileList == 'release.txt' }} 
       run: |
         #Setting UP Variables#
         orgAndRepo=${{ inputs.repo_name }}
