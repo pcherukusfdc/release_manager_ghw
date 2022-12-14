@@ -1,0 +1,86 @@
+name: release_manager
+
+on:
+  workflow_call:
+    inputs:
+      repo_name:
+        required: true
+        type: string
+      pr_number:
+        required: true
+        type: number
+
+jobs:
+  processing_release_manager:
+    name: collecting_release_version
+    runs-on: [ self-hosted, linux, release_manager ]
+    steps:
+    - id: step1
+      name: Checking which files changed 
+      run: |
+        echo "Repo name is ${{ github.repository }} and the PR number is ${{ github.event.pull_request.number }}"
+        URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files"
+        FILES=$(curl -s -X GET -H "Authorization: Bearer $(cat ~/.gh_secrets)" -G $URL | jq -r '.[] | .filename')
+        if [[ $FILES == 'release.txt' ]]
+        then
+          echo "Release.txt modified, procedding further to deploy the code on puppet master..."
+        else 
+          echo "Either some other file modified along with the release.txt or only other files modified"
+          echo "This workflow to merge changes in release.txt, exiting...."
+          exit 0
+        fi
+    - id: step2
+      name: PR Approval and Merging
+      if: ${{ success() }}
+      run: |
+        #Setting UP Variables#
+        orgAndRepo=${{ inputs.repo_name }}
+        orgName=$(echo $orgAndRepo | cut -d'/' -f1)
+        repoName=$(echo $orgAndRepo | cut -d'/' -f2)
+        
+        echo "Printing Vars...."
+        echo "Org Name - $orgName"
+        echo "Repo Name - $repoName"
+        
+        #Execution Starts from here#
+        cd ~/git
+        if [ -d ${repoName} ]; then rm -rf ${repoName}; fi
+        gh auth login --with-token < ~/.gh_secrets
+        echo ""
+        echo "Checking the status of GH login...."
+        gh auth status
+        echo ""
+        
+        echo "Clonning the repository...."
+        gh repo clone "https://github.com/${{ inputs.repo_name }}"
+        echo ""
+        cd $repoName
+        echo "I am in $repoName"
+        echo ""
+        echo "Checking out the PR...."
+        gh pr checkout ${{ inputs.pr_number }}
+        echo ""
+        
+        echo "Merging PR...."
+        gh pr merge --merge
+        if [ $? -ne 0 ]; then
+          echo ""
+          echo "PR Merger Failed!!"
+          gh auth logout --hostname github.com
+          echo ""
+          exit 1
+        else
+          echo ""
+          echo "PR Has Been Merged Successfully!!"
+          gh auth logout --hostname github.com
+        fi
+  processing_release_manager2:
+    needs: processing_release_manager 
+    runs-on: [ self-hosted, linux, release_manager ]
+    steps:
+    - id: step3
+      name: call actions 
+      uses: pcherukusfdc/release_manager@main
+      with:
+        repo_name: '${{ github.repository }}'
+        pr_num: '${{ github.event.pull_request.number }}'
