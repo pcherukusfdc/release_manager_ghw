@@ -31,7 +31,7 @@ jobs:
         fi
     - id: step2
       name: PR Approval and Merging
-      if: ${{ success() }}
+      if: ${{ success() && $FILES == 'release.txt' }} 
       run: |
         #Setting UP Variables#
         orgAndRepo=${{ inputs.repo_name }}
@@ -79,7 +79,8 @@ jobs:
     runs-on: [ self-hosted, linux, release_manager ]
     steps:
     - id: step3
-      name: call actions 
+      name: call actions
+      if: ${{ success() }}
       uses: pcherukusfdc/release_manager@main
       with:
         repo_name: '${{ github.repository }}'
