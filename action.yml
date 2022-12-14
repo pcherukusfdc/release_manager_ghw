@@ -14,4 +14,42 @@ runs:
     shell: bash
     name: Releasing the tags 
     run: |
-      ~/release_manager.sh ${{ inputs.repo_name }} ${{ inputs.pr_num }}
+      org_repo_name=${{ input.repo_name }}
+      
+      org_name=$(echo ${org_repo_name} | cut -d/ -f1) 
+      repo_name=$(echo ${org_repo_name} | cut -d/ -f2)
+      
+      pr_num=${{ input.pr_num }}
+      
+      echo "repo and org name is $org_repo_name"
+      echo "Repo name is $repo_name"  
+      echo "PR number is $pr_num"
+
+      cd ~/git 
+      if [[ -d ${repo_name} ]] ;  then 
+        rm -rf ${repo_name} 
+      fi
+        
+      gh auth login --with-token < ~/.gh_secrets
+
+      echo "Cloing the repo"
+      gh repo clone "https://github.com/${org_repo_name}"
+
+      cd ${repo_name}
+      echo "I am in ${repo_name}"
+
+      echo "Checking out the PR"
+      gh pr checkout ${pr_num}
+      diff=$(git diff -R main | grep ^+ | grep -v release.txt)
+      if [[ $(echo $diff | wc -l) -gt 1 ]] ; then
+        for line in $(echo $diff)
+        do
+          env=$(echo $line | cut -d: -f1 | cut -d '+' -f2)
+          release_ver=$(echo $line | cut -d: -f2)
+          echo "Current sim-lane is $env and the release version is $release_ver"
+        done
+      else
+        env=$(echo $diff | cut -d: -f1 | cut -d '+' -f2)
+        release_ver=$(echo $diff | cut -d: -f2)
+        echo "Current sim-lane is $env and the release version is $release_ver"
+      fi
