@@ -27,7 +27,7 @@ jobs:
         else 
           echo "Either some other file modified along with the release.txt or only other files modified"
           echo "This workflow to merge changes in release.txt, exiting...."
-          exit 0
+          exit 1
         fi
     - id: step2
       name: PR Approval and Merging
