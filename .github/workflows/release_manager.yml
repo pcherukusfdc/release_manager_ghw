@@ -133,7 +133,3 @@ jobs:
         pr_num: '${{ github.event.pull_request.number }}'
         #pr_changes: ${{ needs.processing_release_manager.outputs.changes_from_pr }}
         pr_changes: ${{ matrix.list_of_changes }}
-    - id: step4
-      name: print matrix value 
-      run: |
-        echo "${{ matrix.list_of_changes }}"
