@@ -34,8 +34,8 @@ runs:
       echo "Changes to deploy $deploy_changes"
       
       echo "Extracting simlane and release version"
-      sim_lane=$(echo $deploy_changes | cut -d/ -f1)
-      release_ver=$(echo $deploy_changes | cut -d/ -f2)
+      sim_lane=$(echo $deploy_changes | cut -d: -f1)
+      release_ver=$(echo $deploy_changes | cut -d: -f2)
       
       cd ~/git
       if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
