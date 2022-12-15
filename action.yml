@@ -30,8 +30,13 @@ runs:
       echo "repo and org name is $org_repo_name"
       echo "Repo name is $repo_name"  
       echo "PR number is $pr_num"
-      echo "Changes to deploy $changes_to_deploy"
-
+      #echo "Changes to deploy $changes_to_deploy"
+      
+      for line in ${changes_to_deploy}
+      do
+        echo $line
+      done
+      
       #cd ~/git 
       #if [[ -d ${repo_name} ]] ;  then 
       #  rm -rf ${repo_name} 
