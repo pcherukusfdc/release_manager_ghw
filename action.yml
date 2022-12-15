@@ -7,7 +7,7 @@ inputs:
   pr_num:
     required: true
     type: number
-  changes_to_deploy:
+  pr_changes:
     require: true
     type: string
     
@@ -26,12 +26,14 @@ runs:
       
       pr_num=${{ inputs.pr_num }}
       
-      deploy_changes=${{ inputs.changes_to_deploy }}
+      echo ${{ inputs.pr_changes }}
+      
+      deploy_changes=${{ inputs.pr_changes }}
       
       echo "repo and org name is $org_repo_name"
       echo "Repo name is $repo_name"  
       echo "PR number is $pr_num"
-      echo "Changes to deploy ${deploy_changes}"
+      echo "Changes to deploy $deploy_changes"
       
       for line in ${deploy_changes}
       do
