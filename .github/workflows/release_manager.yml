@@ -25,6 +25,29 @@ jobs:
         then
           echo "Release.txt modified, procedding further to deploy the code on puppet master..."
           echo "::set-output name=file_name::$(echo ${FILES})"
+          
+          echo "Get the changes before we merge"
+          org_repo_name=${{ github.repository }} 
+          repo_name=$(echo ${org_repo_name} | cut -d/ -f2)
+          
+          cd ~/git
+          if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
+          
+          gh auth login --with-token < ~/.gh_secrets
+          
+          echo "Cloing the repo"
+          gh repo clone "https://github.com/${org_repo_name}"
+          
+          cd ${repo_name}
+          echo "I am in ${repo_name}"
+          
+          echo "Checking out the PR"
+          gh pr checkout ${{ github.event.pull_request.number }}
+          changes=$(git diff -R main | grep ^+ | grep -v release.txt)
+          
+          echo ${changes}
+          echo "::set-output name=changes_to_deploy::$(echo ${changes})"
+          
         else 
           echo ""
           echo "Either some other file modified along with the release.txt or only other files modified"
@@ -80,6 +103,8 @@ jobs:
         fi
     outputs:
       file_name: ${{ steps.step1.outputs.file_name }}
+      changes_to_deploy: ${{ steps.step1.outputs.changes_to_deploy }}
+      
   processing_release_manager2:
     needs: processing_release_manager 
     runs-on: [ self-hosted, linux, release_manager ]
@@ -91,3 +116,4 @@ jobs:
       with:
         repo_name: '${{ github.repository }}'
         pr_num: '${{ github.event.pull_request.number }}'
+        changes_to_deploy: '${{ needs.processing_release_manager.outputs.changes_to_deploy }}'
