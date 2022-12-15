@@ -21,11 +21,15 @@ jobs:
         echo "Repo name is ${{ github.repository }} and the PR number is ${{ github.event.pull_request.number }}"
         URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files"
         FILES=$(curl -s -X GET -H "Authorization: Bearer $(cat ~/.gh_secrets)" -G $URL | jq -r '.[] | .filename')
-        if [[ $FILES == 'release.txt' ]]
+        
+        echo "file_names=$(echo $FILES | tr ' ' '\n')" >> $GITHUB_OUTPUT
+        
+        if [[ $file_names == 'release.txt' ]] && [[ $(echo $file_names | wc -l ) == 1 ]]
+        #if [[ $FILES == 'release.txt' ]]
         then
           echo "Release.txt modified, procedding further to deploy the code on puppet master..."
           #echo "::set-output name=file_name::$(echo ${FILES})"
-          echo "file_name=$FILES" >> $GITHUB_OUTPUT
+          echo "file_name=$(echo $file_names | tr ' ' '\n')" >> $GITHUB_OUTPUT
           
           echo "Get the changes before we merge"
           org_repo_name=${{ github.repository }} 
@@ -54,13 +58,13 @@ jobs:
         else 
           echo ""
           echo -e "\033[31;1;4mThis workflow designed to merge, changes in release.txt, found below files with changes exiting....\033[0m"
-          for file in ${FILES}
+          for file in ${file_names}
           do
             echo -e "  $file"
           done
           
           #echo "::set-output name=file_name::$(echo ${FILES})"
-          echo "file_name=$FILES" >> $GITHUB_OUTPUT
+          echo "file_name=$file_names" >> $GITHUB_OUTPUT
           echo ""
         fi
     - id: step2
