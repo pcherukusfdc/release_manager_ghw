@@ -83,7 +83,7 @@ jobs:
     steps:
     - id: step3
       name: call actions
-      if: ${{ success() && fromJSON(needs.processing_vmw-tcode-vms.outputs.fileList) == 'release.txt' }}
+      if: ${{ success() && fromJSON(needs.processing_release_manager.outputs.fileList) == 'release.txt' }}
       uses: pcherukusfdc/release_manager@main
       with:
         repo_name: '${{ github.repository }}'
