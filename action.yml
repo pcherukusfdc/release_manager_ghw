@@ -21,8 +21,8 @@ runs:
       set -eo pipefail
       org_repo_name=${{ inputs.repo_name }}
       
-      org_name=$(echo ${org_repo_name} | cut -d/ -f1) 
-      repo_name=$(echo ${org_repo_name} | cut -d/ -f2)
+      org_name=$(echo ${org_repo_name} | cut -d: -f1) 
+      repo_name=$(echo ${org_repo_name} | cut -d: -f2)
       
       pr_num=${{ inputs.pr_num }}
       
@@ -51,4 +51,5 @@ runs:
       echo "I am in ${repo_name}"
       
       echo "Check out the repo to the release version $release_ver"
+      
       
