@@ -104,7 +104,7 @@ jobs:
         fi
     outputs:
       file_name: ${{ steps.step1.outputs.file_name }}
-      changes_to_deploy: ${{ steps.step1.outputs.changes_to_deploy }}
+      changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
       
   processing_release_manager2:
     needs: processing_release_manager 
@@ -117,4 +117,4 @@ jobs:
       with:
         repo_name: '${{ github.repository }}'
         pr_num: '${{ github.event.pull_request.number }}'
-        changes_to_deploy: '${{ needs.processing_release_manager.outputs.changes_to_deploy }}'
+        pr_changes: ${{ needs.processing_release_manager.outputs.changes_from_pr }}
