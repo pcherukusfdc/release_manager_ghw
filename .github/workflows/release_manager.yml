@@ -49,7 +49,7 @@ jobs:
           
           echo ${changes}
           #echo "::set-output name=changes_to_deploy::$(echo ${changes})"
-          echo "changes_to_deploy=$changes" >> $GITHUB_OUTPUT
+          echo "changes_to_deploy=$(echo $changes | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
           echo ${changes_to_deploy}
           
         else 
@@ -105,27 +105,31 @@ jobs:
           echo "PR Has Been Merged Successfully!!"
           gh auth logout --hostname github.com
         fi
+#    - id: step3
+#      name: Call actions
+#      if: ${{ success() && steps.step1.outputs.file_name == 'release.txt' }}
+#      uses: pcherukusfdc/release_manager@main
+#      with:
+#        repo_name: '${{ github.repository }}'
+#        pr_num: '${{ github.event.pull_request.number }}'
+#        pr_changes: '${{ steps.step1.outputs.changes_to_deploy }}'
+    outputs:
+      file_name: ${{ steps.step1.outputs.file_name }}
+      changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
+      
+  processing_release_manager2:
+    needs: processing_release_manager 
+    runs-on: [ self-hosted, linux, release_manager ]
+    strategy:
+      matrix:
+        list_of_changes: ${{ needs.processing_release_manager.outputs.changes_from_pr }}
+    steps:
     - id: step3
-      name: Call actions
-      if: ${{ success() && steps.step1.outputs.file_name == 'release.txt' }}
+      name: call actions
+      if: ${{ success() && needs.processing_release_manager.outputs.file_name == 'release.txt' }}
       uses: pcherukusfdc/release_manager@main
       with:
         repo_name: '${{ github.repository }}'
         pr_num: '${{ github.event.pull_request.number }}'
-        pr_changes: '${{ steps.step1.outputs.changes_to_deploy }}'
-#    outputs:
-#      file_name: ${{ steps.step1.outputs.file_name }}
-#      changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
-      
-  #processing_release_manager2:
-  #  needs: processing_release_manager 
-  #  runs-on: [ self-hosted, linux, release_manager ]
-  #  steps:
-  #  - id: step3
-  #    name: call actions
-  #    if: ${{ success() && needs.processing_release_manager.outputs.file_name == 'release.txt' }}
-  #    uses: pcherukusfdc/release_manager@main
-  #    with:
-  #      repo_name: '${{ github.repository }}'
-  #      pr_num: '${{ github.event.pull_request.number }}'
-  #      pr_changes: ${{ needs.processing_release_manager.outputs.changes_from_pr }}
+        #pr_changes: ${{ needs.processing_release_manager.outputs.changes_from_pr }}
+        pr_changes: ${{ matrix.list_of_changes }}
