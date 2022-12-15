@@ -48,6 +48,6 @@ runs:
       cd ${repo_name}
       echo "I am in ${repo_name}"
       
-      echo "Check out the repo to the release version $release_ver"
+      echo "Found the change for sim-lane ${sim_lane}, Check out the repo ${repo_name} to the deploy changes in release version $release_ver"
       
       
