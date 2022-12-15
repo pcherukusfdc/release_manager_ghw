@@ -51,8 +51,9 @@ jobs:
           
         else 
           echo ""
-          echo "Either some other file modified along with the release.txt or only other files modified"
-          echo "This workflow to merge changes in release.txt, exiting...."
+          echo "\033[31;1;4mEither some other file modified along with the release.txt or only other files modified\033[0m"
+          echo "\033[31;1;4mPlease make sure you perform changes to release.txt\033[0m"
+          echo "\033[31;1;4mThis workflow to merge changes in release.txt, exiting....\033[0m"
           echo ${FILES}
           echo "::set-output name=file_name::$(echo ${FILES})"
           echo ""
