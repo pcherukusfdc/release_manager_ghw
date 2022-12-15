@@ -118,7 +118,8 @@ jobs:
       changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
       
   processing_release_manager2:
-    needs: processing_release_manager 
+    needs: processing_release_manager
+    if: ${{ success() && needs.processing_release_manager.outputs.file_name == 'release.txt' }}
     runs-on: [ self-hosted, linux, release_manager ]
     strategy:
       matrix:
