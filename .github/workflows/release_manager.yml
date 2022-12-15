@@ -136,4 +136,4 @@ jobs:
     - id: step4
       name: print matrix value 
       run: |
-        echo "${{ matrix.list_of_changes }}"`
+        echo "${{ matrix.list_of_changes }}"
