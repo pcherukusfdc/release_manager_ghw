@@ -26,14 +26,14 @@ runs:
       
       pr_num=${{ inputs.pr_num }}
       
-      changes_to_deploy=${{ inputs.changes_to_deploy }}
+      deploy_changes=${{ inputs.changes_to_deploy }}
       
       echo "repo and org name is $org_repo_name"
       echo "Repo name is $repo_name"  
       echo "PR number is $pr_num"
-      echo "Changes to deploy $changes_to_deploy"
+      echo "Changes to deploy ${deploy_changes}"
       
-      for line in ${changes_to_deploy}
+      for line in ${deploy_changes}
       do
         echo $line
       done
