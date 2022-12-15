@@ -54,7 +54,8 @@ jobs:
           echo -e "\033[31;1;4mEither some other file modified along with the release.txt or only other files modified\033[0m"
           echo -e "\033[31;1;4mPlease make sure you perform changes to release.txt\033[0m"
           echo -e "\033[31;1;4mThis workflow to merge changes in release.txt, exiting....\033[0m"
-          echo ${FILES}
+          echo -e "\033[31;1;4m File modified is ${FILES} \033[0m"
+          
           echo "::set-output name=file_name::$(echo ${FILES})"
           echo ""
         fi
