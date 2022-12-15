@@ -46,7 +46,8 @@ jobs:
           changes=$(git diff -R main | grep ^+ | grep -v release.txt)
           
           echo ${changes}
-          echo "::set-output name=changes_to_deploy::$(echo ${changes})"
+          echo "::set-output name=changes_to_deploy::$($(echo ${changes} | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]'))"
+          echo ${changes_to_deploy}
           
         else 
           echo ""
@@ -108,6 +109,10 @@ jobs:
   processing_release_manager2:
     needs: processing_release_manager 
     runs-on: [ self-hosted, linux, release_manager ]
+    #strategy:
+    #  max-parallel: 1
+    #  matrix:
+    #    listoffiles: ${{ fromJSON(needs.processing_release_manager.outputs.changes_to_deploy) }}
     steps:
     - id: step3
       name: call actions
