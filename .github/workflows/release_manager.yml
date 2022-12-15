@@ -24,7 +24,8 @@ jobs:
         if [[ $FILES == 'release.txt' ]]
         then
           echo "Release.txt modified, procedding further to deploy the code on puppet master..."
-          echo "::set-output name=file_name::$(echo ${FILES})"
+          #echo "::set-output name=file_name::$(echo ${FILES})"
+          echo "file_name=$FILES" >> $GITHUB_OUTPUT
           
           echo "Get the changes before we merge"
           org_repo_name=${{ github.repository }} 
@@ -46,7 +47,8 @@ jobs:
           changes=$(git diff -R main | grep ^+ | grep -v release.txt | sed 's/+//g')
           
           echo ${changes}
-          echo "::set-output name=changes_to_deploy::$(echo ${changes})"
+          #echo "::set-output name=changes_to_deploy::$(echo ${changes})"
+          echo "changes_to_deploy=$changes" >> $GITHUB_OUTPUT
           echo ${changes_to_deploy}
           
         else 
@@ -56,7 +58,8 @@ jobs:
           echo -e "\033[31;1;4mThis workflow to merge changes in release.txt, exiting....\033[0m"
           echo -e "\033[31;1;4m File modified is ${FILES} \033[0m"
           
-          echo "::set-output name=file_name::$(echo ${FILES})"
+          #echo "::set-output name=file_name::$(echo ${FILES})"
+          echo "file_name=$FILES" >> $GITHUB_OUTPUT
           echo ""
         fi
     - id: step2
