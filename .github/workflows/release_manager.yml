@@ -43,10 +43,10 @@ jobs:
           
           echo "Checking out the PR"
           gh pr checkout ${{ github.event.pull_request.number }}
-          changes=$(git diff -R main | grep ^+ | grep -v release.txt)
+          changes=$(git diff -R main | grep ^+ | grep -v release.txt | sed 's/+//g')
           
           echo ${changes}
-          echo "::set-output name=changes_to_deploy::$($(echo ${changes} | sed 's/+//g' | jq -R -s -c 'split("\n")[:-1]'))"
+          echo "::set-output name=changes_to_deploy::$(echo ${changes})"
           echo ${changes_to_deploy}
           
         else 
@@ -109,10 +109,6 @@ jobs:
   processing_release_manager2:
     needs: processing_release_manager 
     runs-on: [ self-hosted, linux, release_manager ]
-    strategy:
-      max-parallel: 1
-      matrix:
-        listoffiles: ${{ fromJSON(needs.processing_release_manager.outputs.changes_to_deploy) }}
     steps:
     - id: step3
       name: call actions
