@@ -18,6 +18,7 @@ runs:
     shell: bash
     name: Releasing the tags 
     run: |
+      set -eo pipefail
       org_repo_name=${{ inputs.repo_name }}
       
       org_name=$(echo ${org_repo_name} | cut -d/ -f1) 
