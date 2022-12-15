@@ -39,7 +39,7 @@ runs:
       echo "I am in ${repo_name}"
 
       echo "Checking out the PR"
-      gh pr checkout ${pr_num}
+      gh pr checkout ${{ inputs.pr_num }}
       diff=$(git diff -R main | grep ^+ | grep -v release.txt)
       if [[ $(echo $diff | wc -l) -gt 1 ]] ; then
         for line in $(echo $diff)
