@@ -47,6 +47,10 @@ jobs:
           gh pr checkout ${{ github.event.pull_request.number }}
           changes=$(git diff -R main | grep ^+ | grep -v release.txt | sed 's/+//g')
           
+          echo "---------------------------------------------"
+          git branch -a
+          echo "---------------------------------------------"
+          
           echo "+++++++++++++++++++++++++++++++++++++++++++++"
           git diff -R main
           echo "+++++++++++++++++++++++++++++++++++++++++++++"
