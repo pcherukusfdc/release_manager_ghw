@@ -45,14 +45,10 @@ jobs:
           
           echo "Checking out the PR"
           gh pr checkout ${{ github.event.pull_request.number }}
-          changes=$(git diff -R main | grep ^+ | grep -v release.txt | sed 's/+//g')
-          
-          echo "---------------------------------------------"
-          git branch -a
-          echo "---------------------------------------------"
+          changes=$(git diff main | grep ^+ | grep -v release.txt | sed 's/+//g')
           
           echo "+++++++++++++++++++++++++++++++++++++++++++++"
-          git diff -R main
+          git diff main
           echo "+++++++++++++++++++++++++++++++++++++++++++++"
           
           echo ${changes}
