@@ -52,8 +52,10 @@ runs:
       
       #TODO: write code to checkout the based on the tag which does not supported by GitHub command line 
       # I have to use git command.
-      git checkout $release_ver -b ${repo_name}_${release_ver}
+      echo "Checking out the branch based on the tag ${release_ver}"
+      git checkout $release_ver -b ${sim_lane}_${release_ver}
       
+      echo "Copying the content to the destination"
       cp -r * ~/environment/${sim_lane}/modules/${repo_name}/
       
       cd ../
