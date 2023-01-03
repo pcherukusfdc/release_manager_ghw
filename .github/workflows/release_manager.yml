@@ -47,6 +47,10 @@ jobs:
           gh pr checkout ${{ github.event.pull_request.number }}
           changes=$(git diff -R main | grep ^+ | grep -v release.txt | sed 's/+//g')
           
+          echo "+++++++++++++++++++++++++++++++++++++++++++++"
+          git diff -R main | grep ^+ | grep -v release.txt | sed 's/+//g'
+          echo "+++++++++++++++++++++++++++++++++++++++++++++"
+          
           echo ${changes}
           #echo "::set-output name=changes_to_deploy::$(echo ${changes})"
           echo "changes_to_deploy=$(echo $changes | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
