@@ -21,8 +21,8 @@ jobs:
       
         echo "Get the changes before we merge"
         org_repo=${{ inputs.repo_name }}
-        org_repo_name=$(echo ${org_repo} | sed 's/_release//')
-        repo_name=$(echo ${org_repo_name} | cut -d/ -f2)
+        release_repo_name=$(echo ${org_repo} | cut -d/ -f2)
+        actual_repo_name=$(echo ${org_repo} | sed 's/_release//' | cut -d/ -f2)
         
         echo "Repo name is ${{ inputs.repo_name }} and the PR number is ${{ inputs.pr_number }}"
         URL="https://api.github.com/repos/${{ inputs.repo_name }}/pulls/${{ inputs.pr_number }}/files"
@@ -31,20 +31,20 @@ jobs:
         if [[ $FILES == 'release.txt' ]]
         then
           echo "Release.txt modified, procedding further to deploy the code on puppet master..."
-          #echo "::set-output name=file_name::$(echo ${FILES})"
           echo "file_name=$FILES" >> $GITHUB_OUTPUT
-          echo "Repo_Name=$repo_name" >> $GITHUB_OUTPUT
+          echo "Repo_Name=$actual_repo_name" >> $GITHUB_OUTPUT
+          echo "PR_number=${{ inputs.pr_number }}" >> $GITHUB_OUTPUT
           
           cd ~/git
-          if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
+          if [[ -d ${release_repo_name} ]] ;  then rm -rf ${release_repo_name} ; fi
           
           gh auth login --with-token < ~/.gh_secrets
           
           echo "Cloing the repo"
-          gh repo clone "https://github.com/${org_repo_name}"
+          gh repo clone "https://github.com/${org_repo}"
           
-          cd ${repo_name}
-          echo "I am in ${repo_name}"
+          cd ${release_repo_name}
+          echo "I am in ${release_repo_name}"
           
           echo "Checking out the PR"
           gh pr checkout ${{ inputs.pr_number }}
@@ -72,8 +72,7 @@ jobs:
       if: ${{ success() && steps.step1.outputs.file_name == 'release.txt' }} 
       run: |
         #Setting UP Variables#
-        orgAndRepo_name=${{ inputs.repo_name }}
-        orgAndRepo=$(echo ${orgAndRepo_name} | sed 's/_release//')
+        orgAndRepo=${{ inputs.repo_name }}
         orgName=$(echo $orgAndRepo | cut -d'/' -f1)
         repoName=$(echo $orgAndRepo | cut -d'/' -f2)
         
@@ -125,6 +124,7 @@ jobs:
       file_name: ${{ steps.step1.outputs.file_name }}
       changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
       REPO_name: ${{ steps.step1.outputs.REPO_name }}
+      PR_Number: ${{ steps.step1.outputs.PR_number }}
       
   processing_release_manager2:
     needs: processing_release_manager
@@ -140,6 +140,6 @@ jobs:
       uses: pcherukusfdc/release_manager@main
       with:
         repo_name: '${{ needs.processing_release_manager.outputs.REPO_name }}'
-        pr_num: '${{ inputs.pr_number }}'
+        pr_num: '${{ needs.processing_release_manager.outputs.PR_Number }}'
         #pr_changes: ${{ needs.processing_release_manager.outputs.changes_from_pr }}
         pr_changes: ${{ matrix.list_of_changes }}
