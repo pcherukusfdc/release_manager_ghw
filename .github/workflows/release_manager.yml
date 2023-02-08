@@ -129,7 +129,7 @@ jobs:
   processing_release_manager2:
     needs: processing_release_manager
     if: ${{ success() && needs.processing_release_manager.outputs.file_name == 'release.txt' }}
-    runs-on: [ self-hosted, linux, release_manager ]
+    runs-on: [ self-hosted, linux, puppet_release ]
     strategy:
       matrix:
         list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
