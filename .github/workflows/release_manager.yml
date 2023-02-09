@@ -38,7 +38,7 @@ jobs:
         echo ${changes}
         echo "changes_to_deploy=$(echo $changes | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         echo ${changes_to_deploy}
-        exit 0
+        
     outputs:
       changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
 
