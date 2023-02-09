@@ -123,6 +123,4 @@ jobs:
       uses: pcherukusfdc/release_manager@main
       with:
         repo_name: '${{ inputs.repo_name }}'
-        pr_num: '${{ inputs.pr_number }}'
-        #pr_changes: ${{ needs.processing_release_manager.outputs.changes_from_pr }}
         pr_changes: ${{ matrix.list_of_changes }}
