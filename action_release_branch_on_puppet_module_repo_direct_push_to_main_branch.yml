@@ -1,0 +1,63 @@
+name: 'Action to execute shell script'
+description: 'pull the changes as per the tags'
+inputs:
+  repo_name:
+    required: true
+    type: string
+  pr_changes:
+    require: true
+    type: string
+    
+runs:
+  using: "composite"
+  steps:
+  - id: step1
+    shell: bash
+    name: Releasing the tags 
+    run: |
+      set -eo pipefail
+      org_repo_name=${{ inputs.repo_name }}
+      
+      org_name=$(echo ${org_repo_name} | cut -d/ -f1) 
+      repo_name=$(echo ${org_repo_name} | cut -d/ -f2)
+           
+      deploy_changes=${{ inputs.pr_changes }}
+      
+      echo "repo and org name is $org_repo_name"
+      echo "Repo name is $repo_name"  
+      echo "Changes to deploy $deploy_changes"
+      
+      echo "Extracting simlane and release version"
+      sim_lane=$(echo $deploy_changes | cut -d: -f1)
+      release_ver=$(echo $deploy_changes | cut -d: -f2)
+      
+      cd ~/git
+      if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
+      
+      gh auth login --with-token < ~/.gh_secrets
+      
+      echo "Cloning the repo"
+      gh repo clone "https://github.com/${org_repo_name}"
+      
+      cd ${repo_name}
+      echo "I am in ${repo_name}"
+      
+      echo "Found the change for sim-lane ${sim_lane}, Check out the repo ${repo_name} to the deploy changes in release version $release_ver"
+      
+      #TODO: write code to checkout the based on the tag which does not supported by GitHub command line 
+      # I have to use git command.
+      echo "Checking out the branch based on the tag ${release_ver} or branch"
+      if [[ ${release_ver} =~ ^v[0-9]{,2}.[0-9]{,2}.[0-9]{,2}$ ]] 
+      then
+         git checkout $release_ver -b ${sim_lane}_${release_ver}
+      else
+         git checkout ${release_ver}
+      fi
+      
+      echo "Copying the content to the destination"
+      cp -r * ~/environment/${sim_lane}/modules/${repo_name}/
+      
+      cd ../
+      
+      echo "Removing the cloned repo for next processing...."
+      rm -rf ${repo_name}
