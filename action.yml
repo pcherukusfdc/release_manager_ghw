@@ -1,4 +1,4 @@
-name: 'Action to execute shell script'
+name: 'Action to deploy puppet module on puppet servers'
 description: 'pull the changes as per the tags'
 inputs:
   repo_name:
@@ -13,7 +13,7 @@ runs:
   steps:
   - id: step1
     shell: bash
-    name: Releasing the tags 
+    name: Deploy puppet module on puppet serversas per the tags or branches
     run: |
       set -eo pipefail
       org_repo_name=${{ inputs.repo_name }}
@@ -47,7 +47,7 @@ runs:
       #TODO: write code to checkout the based on the tag which does not supported by GitHub command line 
       # I have to use git command.
       echo "Checking out the branch based on the tag ${release_ver} or branch"
-      if [[ ${release_ver} =~ ^v[0-9]{,2}.[0-9]{,2}.[0-9]{,2}$ ]] 
+      if [[ ${release_ver} =~ ^v[0-9].* ]] || [[ ${release_ver} =~ ^[0-9].* ]]
       then
          git checkout $release_ver -b ${sim_lane}_${release_ver}
       else
@@ -55,7 +55,12 @@ runs:
       fi
       
       echo "Copying the content to the destination"
-      cp -r * ~/environment/${sim_lane}/modules/${repo_name}/
+      if [[ $? == 0 ]] ; then
+        cp -r * ~/environment/${sim_lane}/modules/${repo_name}/
+      else
+        echo 'Repository checkout was not successful, please check'
+        exit 1
+      fi
       
       cd ../
       
