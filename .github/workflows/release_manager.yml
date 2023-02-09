@@ -29,7 +29,7 @@ jobs:
         gh auth login --with-token < ~/.gh_secrets
           
         echo "Cloing the repo"
-        gh repo clone -b release "https://github.com/${org_repo}"
+        git clone -b release "https://github.com/${org_repo}"
         
         cd ${repo_name}
         echo "I am in ${repo_name}"
