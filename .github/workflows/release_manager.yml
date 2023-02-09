@@ -47,10 +47,10 @@ jobs:
           
           echo "Checking out the PR"
           gh pr checkout ${{ inputs.pr_number }}
-          changes=$(git diff main | grep ^+ | grep -v release.txt | sed 's/+//g')
+          changes=$(git diff release | grep ^+ | grep -v release.txt | sed 's/+//g')
           
           echo "+++++++++++++++++++++++++++++++++++++++++++++"
-          git diff main
+          git diff release
           echo "+++++++++++++++++++++++++++++++++++++++++++++"
           
           echo ${changes}
