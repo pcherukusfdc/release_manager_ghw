@@ -27,7 +27,10 @@ jobs:
         echo "Repo name is ${{ inputs.repo_name }} and the PR number is ${{ inputs.pr_number }}"
         URL="https://api.github.com/repos/${{ inputs.repo_name }}/commits/REF"
         
+        FILES=$(curl -s -X GET -H "Authorization: Bearer $(cat ~/.gh_secrets)" -G $URL)
         echo $URL
+        echo $FILES
+        exit 0
         FILES=$(curl -s -X GET -H "Authorization: Bearer $(cat ~/.gh_secrets)" -G $URL | jq -r '.[] | .filename')
                
         if [[ $FILES == 'release.txt' ]]
