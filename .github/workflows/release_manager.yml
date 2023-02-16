@@ -286,7 +286,7 @@ jobs:
         fi
     outputs:
       file_name: ${{ steps.step1.outputs.file_name }}
-      changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }
+      changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
         
   processing_release_manager_for_common_bt:
     name: collecting_release_version_for_common_bt
@@ -338,7 +338,7 @@ jobs:
         fi
     outputs:
       file_name: ${{ steps.step1.outputs.file_name }}
-      changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }  
+      changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}  
       
   processing_release_manager_for_common_merge:
     needs: processing_release_manager_for_common_bt
