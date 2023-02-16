@@ -72,7 +72,7 @@ jobs:
     steps:
     - id: step2
       name: PR Approval and Merging
-      if: ${{ success() && steps.step1.outputs.file_name == 'release.txt' }} 
+      if: "startsWith( inputs.repo_name, 'pcherukusfdc/bt' )" 
       run: |
         #Setting UP Variables#
         orgAndRepo=${{ inputs.repo_name }}
