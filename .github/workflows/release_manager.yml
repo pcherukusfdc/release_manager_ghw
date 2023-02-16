@@ -8,7 +8,7 @@ on:
         type: string
       pr_num:
         required: true
-        type: number
+        type: string
 
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
     uses: pcherukusfdc/release_manager/.github/workflows/release_wrapper.yml@main 
     with:
       repo_name: ${{ inputs.repo_name }}
-      pr_number: "${{ toJSON(inputs.pr_num) }}"
+      pr_number: "${{ inputs.pr_num }}"
       runner: "tableau_runner"
     secrets: inherit
   call-workflow-bt:
@@ -25,7 +25,7 @@ jobs:
     uses: pcherukusfdc/release_manager/.github/workflows/release_wrapper.yml@main
     with:
       repo_name: ${{ inputs.repo_name }}
-      pr_number: ${{ toJSON(inputs.pr_num) }}"
+      pr_number: ${{ inputs.pr_num }}"
       runner: "code_runner"
     secrets: inherit
     
