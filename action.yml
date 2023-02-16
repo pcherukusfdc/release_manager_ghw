@@ -54,6 +54,8 @@ runs:
          git checkout ${release_ver}
       fi
       
+      echo $(hostname)
+      
       echo "Copying the content to the destination"
       if [[ $? == 0 ]] ; then
         cp -r * ~/environment/${sim_lane}/modules/${repo_name}/
