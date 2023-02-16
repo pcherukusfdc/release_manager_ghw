@@ -13,19 +13,19 @@ on:
 
 jobs:
   call-workflow-tb:
-    if: "startsWith( inputs.repo_name, 'pcherukusfdc/tb' )"
+    if: startsWith( inputs.repo_name, 'pcherukusfdc/tb' )
     uses: pcherukusfdc/release_manager/.github/workflows/release_wrapper.yml@main 
     with:
       repo_name: ${{ inputs.repo_name }}
-      pr_number: inputs.pr_num 
+      pr_number: "${{ toJSON(inputs.pr_num) }}"
       runner: 'tableau_runner'
     secrets: inherit
   call-workflow-bt:
-    if: "startsWith( inputs.repo_name, 'pcherukusfdc/bt' )"
+    if: startsWith( inputs.repo_name, 'pcherukusfdc/bt' )
     uses: pcherukusfdc/release_manager/.github/workflows/release_wrapper.yml@main
     with:
       repo_name: ${{ inputs.repo_name }}
-      pr_number: inputs.pr_num
+      pr_number: ${{ toJSON(inputs.pr_num) }}"
       runner: 'code_runner'
     secrets: inherit
     
