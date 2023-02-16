@@ -1,0 +1,127 @@
+name: release_wrapper
+
+on:
+  workflow_call:
+    inputs:
+      repo_name:
+        required: true
+        type: string
+      pr_number:
+        required: true
+        type: number
+      runner:
+        required: true
+        type: string
+
+jobs:
+  processing_release_manager_for_tb:
+    name: collecting_release_version_for_tb
+    runs-on: [ self-hosted, linux, ${{ inputs.runner }} ]
+    steps:
+    - id: step1
+      name: Checking which files changed 
+      run: |
+      
+        echo "Get the changes before we merge"
+        org_repo=${{ inputs.repo_name }}
+        repo_name=$(echo ${org_repo} | cut -d/ -f2)
+        
+        echo "Repo name is ${{ inputs.repo_name }} and the PR number is ${{ inputs.pr_number }}"
+        URL="https://api.github.com/repos/${{ inputs.repo_name }}/pulls/${{ inputs.pr_number }}/files"
+        FILES=$(curl -s -X GET -H "Authorization: Bearer $(cat ~/.gh_secrets)" -G $URL | jq -r '.[] | .filename')
+               
+        if [[ $FILES == 'release.txt' ]]
+        then
+          echo "Release.txt modified, procedding further to deploy the code on puppet master..."
+          echo "file_name=$FILES" >> $GITHUB_OUTPUT
+          #echo "Repo_Name=$repo_name" >> $GITHUB_OUTPUT
+          #echo "PR_number=${{ inputs.pr_number }}" >> $GITHUB_OUTPUT
+          
+          cd ~/git
+          if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
+          
+          gh auth login --with-token < ~/.gh_secrets
+          
+          echo "Cloing the repo"
+          git clone -b release "https://github.com/${org_repo}"
+          
+          cd ${repo_name}
+          echo "I am in ${repo_name}"
+          
+          echo "Checking out the PR"
+          gh pr checkout ${{ inputs.pr_number }}
+          changes=$(git diff release | grep ^+ | grep -v release.txt | sed 's/+//g')
+          
+          echo "+++++++++++++++++++++++++++++++++++++++++++++"
+          git diff release
+          echo "+++++++++++++++++++++++++++++++++++++++++++++"
+          
+          echo ${changes}
+          #echo "::set-output name=changes_to_deploy::$(echo ${changes})"
+          echo "changes_to_deploy=$(echo $changes | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          echo ${changes_to_deploy}
+        fi
+    - id: step2
+      name: PR Approval and Merging 
+      run: |
+        #Setting UP Variables#
+        orgAndRepo=${{ inputs.repo_name }}
+        orgName=$(echo $orgAndRepo | cut -d'/' -f1)
+        repoName=$(echo $orgAndRepo | cut -d'/' -f2)
+        
+        echo "Printing Vars...."
+        echo "Org Name - $orgName"
+        echo "Repo Name - $repoName"
+        
+        #Execution Starts from here#
+        cd ~/git
+        if [ -d ${repoName} ]; then rm -rf ${repoName}; fi
+        gh auth login --with-token < ~/.gh_secrets
+        echo ""
+        echo "Checking the status of GH login...."
+        gh auth status
+        echo ""
+        
+        echo "Clonning the repository...."
+        git clone -b release "https://github.com/${orgAndRepo}"
+        echo ""
+        cd $repoName
+        echo "I am in $repoName"
+        echo ""
+        echo "Checking out the PR...."
+        gh pr checkout ${{ inputs.pr_number }}
+        echo ""
+        
+        echo "Merging PR...."
+        gh pr merge --merge
+        if [ $? -ne 0 ]; then
+          echo ""
+          echo "PR Merger Failed!!"
+          gh auth logout --hostname github.com
+          echo ""
+          exit 1
+        else
+          echo ""
+          echo "PR Has Been Merged Successfully!!"
+          gh auth logout --hostname github.com
+        fi
+    outputs:
+      file_name: ${{ steps.step1.outputs.file_name }}
+      changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
+   
+  processing_release_manager_for_tb_actions:
+    needs: processing_release_manager_for_tb
+    if: ${{ success() && needs.processing_release_manager_for_tb.outputs.file_name == 'release.txt' }}
+    runs-on: [ self-hosted, linux, tableau_runner ]
+    strategy:
+      matrix:
+        list_of_changes: ${{ fromJSON(needs.processing_release_manager_for_tb.outputs.changes_from_pr) }}
+    steps:
+    - id: step3
+      name: Deploying puppet module
+      if: ${{ success() && needs.processing_release_manager_for_tb.outputs.file_name == 'release.txt' }}
+      uses: pcherukusfdc/release_manager@main
+      with:
+        repo_name: '${{ inputs.repo_name }}'
+        pr_changes: ${{ matrix.list_of_changes }}
+        
