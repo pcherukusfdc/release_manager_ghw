@@ -117,7 +117,7 @@ jobs:
         fi
       
   processing_release_manager3:
-    needs: processing_release_manager
+    needs: processing_release_manager2
     if: ${{ success() && needs.processing_release_manager.outputs.file_name == 'release.txt' }}
     runs-on: [ self-hosted, linux, code_release ]
     strategy:
