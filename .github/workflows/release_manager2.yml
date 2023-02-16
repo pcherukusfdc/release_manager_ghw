@@ -59,6 +59,17 @@ jobs:
           echo "changes_to_deploy=$(echo $changes | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
           echo ${changes_to_deploy}
         fi
+    outputs:
+      file_name: ${{ steps.step1.outputs.file_name }}
+      changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
+      #REPO_name: ${{ steps.step1.outputs.REPO_name }}
+      #PR_Number: ${{ steps.step1.outputs.PR_number }} 
+      
+  processing_release_manager2:
+    needs: processing_release_manager
+    if: ${{ success() && needs.processing_release_manager.outputs.file_name == 'release.txt' }}
+    runs-on: [ self-hosted, linux, code_release ]
+    steps:
     - id: step2
       name: PR Approval and Merging
       if: ${{ success() && steps.step1.outputs.file_name == 'release.txt' }} 
@@ -104,13 +115,8 @@ jobs:
           echo "PR Has Been Merged Successfully!!"
           gh auth logout --hostname github.com
         fi
-    outputs:
-      file_name: ${{ steps.step1.outputs.file_name }}
-      changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
-      #REPO_name: ${{ steps.step1.outputs.REPO_name }}
-      #PR_Number: ${{ steps.step1.outputs.PR_number }}
       
-  processing_release_manager2:
+  processing_release_manager3:
     needs: processing_release_manager
     if: ${{ success() && needs.processing_release_manager.outputs.file_name == 'release.txt' }}
     runs-on: [ self-hosted, linux, code_release ]
