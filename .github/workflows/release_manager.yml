@@ -238,7 +238,7 @@ jobs:
         
   processing_release_manager_for_common_tb:
     name: collecting_release_version_for_common_tb
-    if: "!(startsWith( inputs.repo_name, 'pcherukusfdc/tb' ) && startsWith( inputs.repo_name, 'pcherukusfdc/bt' ))"
+    if: "!startsWith( inputs.repo_name, 'pcherukusfdc/tb' ) && !startsWith( inputs.repo_name, 'pcherukusfdc/bt' )"
     runs-on: [ self-hosted, linux, code_release ]
     steps:
     - id: step1
