@@ -15,16 +15,16 @@ jobs:
     if: "startsWith( inputs.repo_name, 'pcherukusfdc/tb' )"
     uses: pcherukusfdc/release_manager/.github/workflows/release_wrapper.yml@main
     with:
-      repo_name: ${{ github.repository }}
-      pr_number: ${{ github.event.pull_request.number }}
+      repo_name: ${{ inputs.repo_name }}
+      pr_number: ${{ inputs.pr_number }}
       runner: 'tableau_runner'
     secrets: inherit
   call-workflow-bt:
     if: "startsWith( inputs.repo_name, 'pcherukusfdc/bt' )"
     uses: pcherukusfdc/release_manager/.github/workflows/release_wrapper.yml@main
     with:
-      repo_name: ${{ github.repository }}
-      pr_number: ${{ github.event.pull_request.number }}
+      repo_name: ${{ inputs.repo_name }}
+      pr_number: ${{ inputs.pr_number }}
       runner: 'code_runner'
     secrets: inherit
     
