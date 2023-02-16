@@ -6,17 +6,18 @@ on:
       repo_name:
         required: true
         type: string
-      pr_number:
+      pr_num:
         required: true
         type: number
+
 
 jobs:
   call-workflow-tb:
     if: "startsWith( inputs.repo_name, 'pcherukusfdc/tb' )"
-    uses: pcherukusfdc/release_manager/.github/workflows/release_wrapper.yml@main
+    uses: pcherukusfdc/release_manager/.github/workflows/release_wrapper.yml@main 
     with:
       repo_name: ${{ inputs.repo_name }}
-      pr_number: ${{ inputs.pr_number }}
+      pr_number: inputs.pr_num 
       runner: 'tableau_runner'
     secrets: inherit
   call-workflow-bt:
@@ -24,7 +25,7 @@ jobs:
     uses: pcherukusfdc/release_manager/.github/workflows/release_wrapper.yml@main
     with:
       repo_name: ${{ inputs.repo_name }}
-      pr_number: ${{ inputs.pr_number }}
+      pr_number: inputs.pr_num
       runner: 'code_runner'
     secrets: inherit
     
