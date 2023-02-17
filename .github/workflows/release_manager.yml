@@ -113,7 +113,7 @@ jobs:
     if: | 
       ( success() && needs.processing_release_manager.outputs.file_name == 'release.txt' ) &&
       ( "!startsWith(inputs.repo_name, 'pcherukusfdc/tb')"  && startsWith(inputs.repo_name, 'pcherukusfdc/bt') ) !!
-      ( "!startsWith(inputs.repo_name, 'pcherukusfdc/tb')"  && "!startsWith(inputs.repo_name, 'pcherukusfdc/bt')" )
+      ( "!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt')" )
     needs: processing_release_manager
     runs-on: [ self-hosted, linux, code_runner ]
     strategy:
@@ -131,7 +131,7 @@ jobs:
     if: |
       ( success() && needs.processing_release_manager.outputs.file_name == 'release.txt' ) &&
       ( startsWith(inputs.repo_name, 'pcherukusfdc/tb')  && "!startsWithh(inputs.repo_name, 'pcherukusfdc/bt')" ) !!
-      ( "!startsWith(inputs.repo_name, 'pcherukusfdc/tb')"  && "!startsWith(inputs.repo_name, 'pcherukusfdc/bt')" )
+      ( "!startsWith(inputs.repo_name, 'pcherukusfdc/tb')  && !startsWith(inputs.repo_name, 'pcherukusfdc/bt')" )
     needs: processing_release_manager
     runs-on: [ self-hosted, linux, tableau_release ]
     strategy:
