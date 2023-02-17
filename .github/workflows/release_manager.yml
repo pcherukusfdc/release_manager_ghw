@@ -174,7 +174,7 @@ jobs:
  
   processing_release_manager_actions_bt_runner:
     if: | 
-      success() &&
+      success() ||
       startsWith(inputs.repo_name, 'pcherukusfdc/bt') ||
       (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
     needs: processing_release_manager_2
@@ -190,9 +190,9 @@ jobs:
         repo_name: '${{ inputs.repo_name }}'
         pr_changes: ${{ matrix.list_of_changes }}
         
-  processing_release_manager_on_tableau_runner:
+  processing_release_manager_actions_tableau_runner:
     if: |
-      success() &&
+      success() ||
       startsWith(inputs.repo_name, 'pcherukusfdc/tb') ||
       (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
     needs: processing_release_manager_1 
