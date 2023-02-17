@@ -16,7 +16,7 @@ on:
 jobs:
   processing_release_manager:
     name: collecting_release_version
-    runs-on: [self-hosted, linux, tableau_runner]
+    runs-on: [ self-hosted, linux, tableau_runner ]
     steps:
     - id: step1
       name: Checking which files changed 
