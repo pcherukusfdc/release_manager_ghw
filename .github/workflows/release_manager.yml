@@ -120,7 +120,6 @@ jobs:
       changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
       
   processing_release_manager_for_merge:
-    needs: [processing_release_manager_1, processing_release_manager_2]
     name: collecting_release_version_for_merge
     runs-on: [ self-hosted, linux, code_runner ]
     steps:
@@ -168,9 +167,6 @@ jobs:
           echo "PR Has Been Merged Successfully!!"
           gh auth logout --hostname github.com
         fi
-    outputs:
-      file_name: ${{ steps.step1.outputs.file_name }}
-      changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
  
   processing_release_manager_actions_bt_runner:
     if: | 
