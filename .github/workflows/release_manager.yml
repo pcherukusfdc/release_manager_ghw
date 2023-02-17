@@ -110,11 +110,11 @@ jobs:
       changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
  
   processing_release_manager_actions_bt_runner:
-    needs: processing_release_manager
     if: | 
       ( success() && needs.processing_release_manager.outputs.file_name == 'release.txt' ) &&
       ( "!startsWith(inputs.repo_name, 'pcherukusfdc/tb')"  && startsWith(inputs.repo_name, 'pcherukusfdc/bt') ) !!
       ( "!startsWith(inputs.repo_name, 'pcherukusfdc/tb')"  && "!startsWith(inputs.repo_name, 'pcherukusfdc/bt')" )
+    needs: processing_release_manager
     runs-on: [ self-hosted, linux, code_runner ]
     strategy:
       matrix:
@@ -128,11 +128,11 @@ jobs:
         pr_changes: ${{ matrix.list_of_changes }}
         
   processing_release_manager_on_tableau_runner:
-    needs: processing_release_manager
     if: |
       ( success() && needs.processing_release_manager.outputs.file_name == 'release.txt' ) &&
       ( startsWith(inputs.repo_name, 'pcherukusfdc/tb')  && "!startsWithh(inputs.repo_name, 'pcherukusfdc/bt')" ) !!
       ( "!startsWith(inputs.repo_name, 'pcherukusfdc/tb')"  && "!startsWith(inputs.repo_name, 'pcherukusfdc/bt')" )
+    needs: processing_release_manager
     runs-on: [ self-hosted, linux, tableau_release ]
     strategy:
       matrix:
