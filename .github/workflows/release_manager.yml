@@ -132,7 +132,7 @@ jobs:
       startsWith(inputs.repo_name, 'pcherukusfdc/tb')
 #      "!(startsWith(inputs.repo_name, 'pcherukusfdc/tb') && startsWith(inputs.repo_name, 'pcherukusfdc/bt')"
     needs: processing_release_manager
-    runs-on: [ self-hosted, linux, tableau_release ]
+    runs-on: [ self-hosted, linux, tableau_runner ]
     strategy:
       matrix:
         list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
