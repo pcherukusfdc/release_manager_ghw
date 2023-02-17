@@ -113,8 +113,8 @@ jobs:
     needs: processing_release_manager
     if: | 
       ( success() && needs.processing_release_manager.outputs.file_name == 'release.txt' ) &&
-      ( !startWith(inputs.repo_name, 'pcherukusfdc/tb')  && startWith(inputs.repo_name, 'pcherukusfdc/bt' )) !!
-      ( !startWith(inputs.repo_name, 'pcherukusfdc/tb')  && !startWith(inputs.repo_name, 'pcherukusfdc/bt' ))
+      ( !startsWith(inputs.repo_name, 'pcherukusfdc/tb')  && startsWith(inputs.repo_name, 'pcherukusfdc/bt' )) !!
+      ( !startsWith(inputs.repo_name, 'pcherukusfdc/tb')  && !startsWith(inputs.repo_name, 'pcherukusfdc/bt' ))
     runs-on: [ self-hosted, linux, code_runner ]
     strategy:
       matrix:
@@ -131,8 +131,8 @@ jobs:
     needs: processing_release_manager
     if: |
       ( success() && needs.processing_release_manager.outputs.file_name == 'release.txt' ) &&
-      ( startWith(inputs.repo_name, 'pcherukusfdc/tb')  && !startWith(inputs.repo_name, 'pcherukusfdc/bt' )) !!
-      ( !startWith(inputs.repo_name, 'pcherukusfdc/tb')  && !startWith(inputs.repo_name, 'pcherukusfdc/bt' ))
+      ( startsWith(inputs.repo_name, 'pcherukusfdc/tb')  && !startsWithh(inputs.repo_name, 'pcherukusfdc/bt' )) !!
+      ( !startsWith(inputs.repo_name, 'pcherukusfdc/tb')  && !startsWith(inputs.repo_name, 'pcherukusfdc/bt' ))
     runs-on: [ self-hosted, linux, tableau_release ]
     strategy:
       matrix:
