@@ -8,20 +8,15 @@ on:
         type: string
       pr_num:
         required: true
+        type: number
+      runner_to_use:
+        required: true
         type: string
-
-env:
-  if: startsWith( inputs.repo_name, 'pcherukusfdc/tb' )
-  runner: tableau_runner
-  if: startsWith( inputs.repo_name, 'pcherukusfdc/bt' )
-  runner: code_runner
-  if: !startWith(inputs.repo_name, 'pcherukusfdc/tb')  && !startWith(inputs.repo_name, 'pcherukusfdc/bt' )
-  runner: code_runner
-
+     
 jobs:
   processing_release_manager:
     name: collecting_release_version
-    runs-on: [ self-hosted, linux, ${{ runner }} ]
+    runs-on: ${{ inputs.runner_to_use }} 
     steps:
     - id: step1
       name: Checking which files changed 
@@ -120,7 +115,7 @@ jobs:
       ( success() && needs.processing_release_manager.outputs.file_name == 'release.txt' ) &&
       ( !startWith(inputs.repo_name, 'pcherukusfdc/tb')  && startWith(inputs.repo_name, 'pcherukusfdc/bt' )) !!
       ( !startWith(inputs.repo_name, 'pcherukusfdc/tb')  && !startWith(inputs.repo_name, 'pcherukusfdc/bt' ))
-    runs-on: [ self-hosted, linux, tableau_runner ]
+    runs-on: [ self-hosted, linux, code_runner ]
     strategy:
       matrix:
         list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
@@ -138,7 +133,7 @@ jobs:
       ( success() && needs.processing_release_manager.outputs.file_name == 'release.txt' ) &&
       ( startWith(inputs.repo_name, 'pcherukusfdc/tb')  && !startWith(inputs.repo_name, 'pcherukusfdc/bt' )) !!
       ( !startWith(inputs.repo_name, 'pcherukusfdc/tb')  && !startWith(inputs.repo_name, 'pcherukusfdc/bt' ))
-    runs-on: [ self-hosted, linux, code_release ]
+    runs-on: [ self-hosted, linux, tableau_release ]
     strategy:
       matrix:
         list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
