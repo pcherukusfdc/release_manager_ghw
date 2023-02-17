@@ -123,6 +123,7 @@ jobs:
     if: |
       startsWith(inputs.repo_name, 'pcherukusfdc/tb')
     name: collecting_release_version_for_merge_1
+    needs: processing_release_manager_1
     runs-on: [ self-hosted, linux, tableau_runner ]
     steps:
     - id: step2
@@ -175,6 +176,7 @@ jobs:
       startsWith(inputs.repo_name, 'pcherukusfdc/bt') ||
       (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
     name: collecting_release_version_for_merge
+    needs: processing_release_manager_2
     runs-on: [ self-hosted, linux, code_release ]
     steps:
     - id: step2
