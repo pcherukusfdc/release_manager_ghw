@@ -34,8 +34,8 @@ jobs:
         then
           echo "Release.txt modified, procedding further to deploy the code on puppet master..."
           echo "file_name=$FILES" >> $GITHUB_OUTPUT
-          #echo "Repo_Name=$repo_name" >> $GITHUB_OUTPUT
-          #echo "PR_number=${{ inputs.pr_number }}" >> $GITHUB_OUTPUT
+          echo "Repo_Name=${{ inputs.repo_name }}" >> $GITHUB_OUTPUT
+          echo "PR_number=${{ inputs.pr_number }}" >> $GITHUB_OUTPUT
           
           cd ~/git
           if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
@@ -64,6 +64,8 @@ jobs:
     outputs:
       file_name: ${{ steps.step1.outputs.file_name }}
       changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
+      reponame: ${{ steps.step1.outputs.Repo_Name }}
+      prnumber: ${{ steps.step1.outputs.PR_number }}
       
   processing_release_manager_2:
     if: |
@@ -88,8 +90,8 @@ jobs:
         then
           echo "Release.txt modified, procedding further to deploy the code on puppet master..."
           echo "file_name=$FILES" >> $GITHUB_OUTPUT
-          #echo "Repo_Name=$repo_name" >> $GITHUB_OUTPUT
-          #echo "PR_number=${{ inputs.pr_number }}" >> $GITHUB_OUTPUT
+          echo "Repo_Name=${{ inputs.repo_name }}" >> $GITHUB_OUTPUT
+          echo "PR_number=${{ inputs.pr_number }}" >> $GITHUB_OUTPUT
           
           cd ~/git
           if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
@@ -118,10 +120,12 @@ jobs:
     outputs:
       file_name: ${{ steps.step1.outputs.file_name }}
       changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
+      reponame: ${{ steps.step1.outputs.Repo_Name }}
+      prnumber: ${{ steps.step1.outputs.PR_number }}
       
   processing_release_manager_for_merge:
     name: collecting_release_version_for_merge
-    runs-on: [ self-hosted, linux, code_runner ]
+    runs-on: [ self-hosted, linux, code_runner, tableau_runner ]
     steps:
     - id: step2
       name: PR Approval and Merging 
