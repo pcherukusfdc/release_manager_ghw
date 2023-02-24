@@ -53,7 +53,7 @@ jobs:
         echo "changes_to_deploy=$(echo $changes | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         echo ${changes_to_deploy}
         
-        if: startsWith(inputs.repo_name, "${OWNER}/tb")
+        if [[ ${org_repo} ~= "${OWNER}/tb" ]] ; then
           echo "Merging PR...."
           gh pr merge --merge
           if [ $? -ne 0 ]; then
@@ -109,23 +109,21 @@ jobs:
           #echo "::set-output name=changes_to_deploy::$(echo ${changes})"
         echo "changes_to_deploy=$(echo $changes | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         echo ${changes_to_deploy}
-        if: |
-          startsWith(inputs.repo_name, "${OWNER}/bt")
-          (!startsWith(inputs.repo_name, "${OWNER}/tb") && !startsWith(inputs.repo_name, "${OWNER}/bt"))
-          echo "Merging PR...."
-          gh pr merge --merge
-          if [ $? -ne 0 ]; then
-            echo ""
-            echo "PR Merger Failed!!"
-            gh auth logout --hostname github.com
-            echo ""
-            exit 1
-          else
-            echo ""
-            echo "PR Has Been Merged Successfully!!"
-            gh auth logout --hostname github.com
-          fi
+        
+        echo "Merging PR...."
+        gh pr merge --merge
+        if [ $? -ne 0 ]; then
+          echo ""
+          echo "PR Merger Failed!!"
+          gh auth logout --hostname github.com
+          echo ""
+          exit 1
+        else
+          echo ""
+          echo "PR Has Been Merged Successfully!!"
+          gh auth logout --hostname github.com
         fi
+
     outputs:
       changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
         
