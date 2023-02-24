@@ -36,8 +36,8 @@ runs:
       release_ver=$(echo $deploy_changes | cut -d: -f2)
 
       if [[ ${running_on} == 'tableau' ]] ; then
-        puppet_servers='ndc-pupma-lp701 bdc-pupcm-lp701 ndc-pupcm-lp702'
-      elif [ ${running_on} == 'bt' ]] ; then
+        puppet_servers='ndc-pupma-lp701 ndc-pupcm-lp701 ndc-pupcm-lp702'
+      elif [[ ${running_on} == 'bt' ]] ; then
         puppet_servers='phx-pupma-lp701 phx-pupcm-lp701 phx-pupcm-lp702'
       else
         :
