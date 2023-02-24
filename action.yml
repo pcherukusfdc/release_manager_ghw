@@ -7,6 +7,9 @@ inputs:
   pr_changes:
     require: true
     type: string
+  running_on:
+    require: true
+    type: string
     
 runs:
   using: "composite"
@@ -22,7 +25,8 @@ runs:
       repo_name=$(echo ${org_repo_name} | cut -d/ -f2)
            
       deploy_changes=${{ inputs.pr_changes }}
-      
+      running_on=${{ inputs.running_on }}
+     
       echo "repo and org name is $org_repo_name"
       echo "Repo name is $repo_name"  
       echo "Changes to deploy $deploy_changes"
@@ -30,6 +34,14 @@ runs:
       echo "Extracting simlane and release version"
       sim_lane=$(echo $deploy_changes | cut -d: -f1)
       release_ver=$(echo $deploy_changes | cut -d: -f2)
+
+      if [[ ${running_on} == 'tableau' ]] ; then
+        puppet_servers='ndc-pupma-lp701 bdc-pupcm-lp701 ndc-pupcm-lp702'
+      elif [ ${running_on} == 'bt' ]] ; then
+        puppet_servers='phx-pupma-lp701 phx-pupcm-lp701 phx-pupcm-lp702'
+      else
+        :
+      fi
       
       cd ~/git
       if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
@@ -44,20 +56,18 @@ runs:
       
       echo "Found the change for sim-lane ${sim_lane}, Check out the repo ${repo_name} to the deploy changes in release version $release_ver"
       
-      #TODO: write code to checkout the based on the tag which does not supported by GitHub command line 
-      # I have to use git command.
       echo "Checking out the branch based on the tag ${release_ver} or branch"
-      if [[ ${release_ver} =~ ^v[0-9].* ]] || [[ ${release_ver} =~ ^[0-9].* ]]
-      then
-         git checkout $release_ver -b ${sim_lane}_${release_ver}
-      else
-         git checkout ${release_ver}
-      fi
-      
+
+      git checkout ${release_ver}
+
       echo $(hostname)
       
       echo "Copying the content to the destination"
       if [[ $? == 0 ]] ; then
+        for srv in ${puppet_servers}
+        do
+          echo $srv
+        done
         cp -r * ~/environment/${sim_lane}/modules/${repo_name}/
       else
         echo 'Repository checkout was not successful, please check'
