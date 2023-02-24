@@ -13,8 +13,8 @@ on:
 jobs:
   processing_release_manager_1:
     if: |
-      startsWith(inputs.repo_name, "pcherukusfdc/tb") ||
-      (!startsWith(inputs.repo_name, "pcherukusfdc/tb") && !startsWith(inputs.repo_name, "pcherukusfdc/bt"))
+      startsWith(inputs.repo_name, 'pcherukusfdc/tb') ||
+      (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
     name: collecting_release_version
     runs-on: [ self-hosted, linux, tableau_runner ]
     steps:
@@ -70,8 +70,8 @@ jobs:
       
   processing_release_manager_2:
     if: |
-      startsWith(inputs.repo_name, "pcherukusfdc/bt") ||
-      (!startsWith(inputs.repo_name, "pcherukusfdc/tb") && !startsWith(inputs.repo_name, "pcherukusfdc/bt"))
+      startsWith(inputs.repo_name, 'pcherukusfdc/bt') ||
+      (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
     name: collecting_release_version_for_other
     runs-on: [ self-hosted, linux, code_release ]
     steps:
@@ -127,8 +127,8 @@ jobs:
   processing_release_manager_actions_tableau_runner:
     if: |
       success() ||
-      startsWith(inputs.repo_name, "pcherukusfdc/tb") ||
-      (!startsWith(inputs.repo_name, "pcherukusfdc/tb") && !startsWith(inputs.repo_name, "pcherukusfdc/bt"))
+      startsWith(inputs.repo_name, 'pcherukusfdc/tb') ||
+      (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
     needs: processing_release_manager_1 
     runs-on: [ self-hosted, linux, tableau_runner ]
     strategy:
@@ -146,8 +146,8 @@ jobs:
   processing_release_manager_actions_bt_runner:
     if: | 
       success() ||
-      startsWith(inputs.repo_name, "pcherukusfdc/bt") ||
-      (!startsWith(inputs.repo_name, "pcherukusfdc/tb") && !startsWith(inputs.repo_name, "pcherukusfdc/bt"))
+      startsWith(inputs.repo_name, 'pcherukusfdc/bt') ||
+      (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
     needs: processing_release_manager_2
     runs-on: [ self-hosted, linux, code_release ]
     strategy:
