@@ -50,7 +50,7 @@ jobs:
         echo "changes_to_deploy=$(echo $changes | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         echo ${changes_to_deploy}
         
-        if [[ ${org_repo} ~= "pcherukusfdc/tb" ]] ; then
+        if [[ ${org_repo} =~ "pcherukusfdc/tb" ]] ; then
           echo "Merging PR...."
           gh pr merge --merge
           if [ $? -ne 0 ]; then
