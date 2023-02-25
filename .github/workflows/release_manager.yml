@@ -41,6 +41,16 @@ jobs:
         echo ${changes}
         echo "changes_to_deploy=$(echo $changes | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         
+        if [[ ${repo_name} =~ ^"tb_" ]] ; then
+          runner_is='tableau_runner'
+        elsif  [[ ${repo_name} =~ ^"bt_" ]] ; then
+          runner_is='core_release'
+        else
+          runner_is='[tableau_runner, core_release]'
+        fi
+        
+        echo "runner_to_use=$(echo ${runner_is})" >> $GITHUB_OUTPUT
+        
         echo "Merging PR...."
         gh pr merge --merge
         if [ $? -ne 0 ]; then
@@ -54,18 +64,19 @@ jobs:
           echo "PR Has Been Merged Successfully!!"
           gh auth logout --hostname github.com
         fi
-
     outputs:
       changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
+      runner_to_use: ${{ steps.step1.outputs.runner_to_use }}
         
   processing_release_manager_actions_tableau_runner:
     if: |
       success() ||
       startsWith(inputs.repo_name, 'pcherukusfdc/tb') ||
       (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
-    runs-on: [ self-hosted, linux, tableau_runner ]
+    runs-on: ${{ matrix.runners }}
     strategy:
       matrix:
+        runners: ${{ fromJSON(needs.processing_release_manager.outputs.runner_to_use) }}
         list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
     steps:
     - id: step3
@@ -76,20 +87,20 @@ jobs:
         pr_changes: ${{ matrix.list_of_changes }}
         running_on: 'tableau'
  
-  processing_release_manager_actions_bt_runner:
-    if: | 
-      success() ||
-      startsWith(inputs.repo_name, 'pcherukusfdc/bt') ||
-      (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
-    runs-on: [ self-hosted, linux, code_release ]
-    strategy:
-      matrix:
-        list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
-    steps:
-    - id: step3
-      name: Deploying puppet module
-      uses: pcherukusfdc/release_manager@main
-      with:
-        repo_name: '${{ inputs.repo_name }}'
-        pr_changes: ${{ matrix.list_of_changes }}
-        running_on: 'bt'
+  #processing_release_manager_actions_bt_runner:
+  #  if: | 
+  #    success() ||
+  #    startsWith(inputs.repo_name, 'pcherukusfdc/bt') ||
+  #    (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
+  #  runs-on: [ self-hosted, linux, code_release ]
+  #  strategy:
+  #    matrix:
+  #      list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
+  #  steps:
+  #  - id: step3
+  #    name: Deploying puppet module
+  #    uses: pcherukusfdc/release_manager@main
+  #    with:
+  #      repo_name: '${{ inputs.repo_name }}'
+  #      pr_changes: ${{ matrix.list_of_changes }}
+  #      running_on: 'bt'
