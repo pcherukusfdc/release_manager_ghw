@@ -34,8 +34,8 @@ jobs:
         #echo ${runner_is}
         
         #echo "runner_to_use=$(echo ${runner_is})" >> $GITHUB_OUTPUT
-        echo "runner_to_use=$(echo $runner_is | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]' | sed 's/\"//g')" >> $GITHUB_OUTPUT
-        #echo "runner_to_use=$(echo $runner_is | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+        #echo "runner_to_use=$(echo $runner_is | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]' | sed 's/\"//g')" >> $GITHUB_OUTPUT
+        echo "runner_to_use=$(echo $runner_is | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         
         cd ~/git
         if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
