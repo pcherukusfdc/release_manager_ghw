@@ -63,7 +63,6 @@ jobs:
       success() ||
       startsWith(inputs.repo_name, 'pcherukusfdc/tb') ||
       (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
-    needs: processing_release_manager
     runs-on: [ self-hosted, linux, tableau_runner ]
     strategy:
       matrix:
@@ -82,7 +81,6 @@ jobs:
       success() ||
       startsWith(inputs.repo_name, 'pcherukusfdc/bt') ||
       (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
-    needs: processing_release_manager
     runs-on: [ self-hosted, linux, code_release ]
     strategy:
       matrix:
