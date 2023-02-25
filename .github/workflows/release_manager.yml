@@ -22,11 +22,9 @@ jobs:
         org_repo=${{ inputs.repo_name }}
         repo_name=$(echo ${org_repo} | cut -d/ -f2)
         
-        if [[ ${repo_name} =~ "^tb_" ]]
-        then
+        if [[ ${repo_name} =~ "tb_" ]] ; then
           runner_is=tableau_runner
-        elif  [[ ${repo_name} =~ "^bt_" ]]
-        then
+        elif  [[ ${repo_name} =~ "bt_" ]] ; then
           runner_is=code_release
         else
           runner_is='[tableau_runner, core_release]'
