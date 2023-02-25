@@ -24,13 +24,13 @@ jobs:
         
         
         if [[ ${repo_name} =~ "tb_" ]] ; then
-          echo "runner_to_use=$(echo tableau_runner | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]' | sed 's/\"//g')" >> $GITHUB_OUTPUT
+          echo "runner_to_use=$(echo tableau_runner | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]' | sed 's/\"//g' | sed 's/\'//g' | tr -d \'\')" >> $GITHUB_OUTPUT
           #runner_is=tableau_runner
         elif  [[ ${repo_name} =~ "bt_" ]] ; then
-          echo "runner_to_use=$(echo code_release | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]' | sed 's/\"//g')" >> $GITHUB_OUTPUT
+          echo "runner_to_use=$(echo code_release | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]' | sed 's/\"//g' | tr -d \'\')" >> $GITHUB_OUTPUT
           #runner_is=code_release
         else
-          echo "runner_to_use=$(echo code_release-tableau_runner | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]' | sed 's/\"//g')" >> $GITHUB_OUTPUT
+          echo "runner_to_use=$(echo code_release-tableau_runner | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]' | sed 's/\"//g' | tr -d \'\')" >> $GITHUB_OUTPUT
           #runner_is=code_release-tableau_runner
         fi
         
