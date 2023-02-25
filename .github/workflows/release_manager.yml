@@ -87,7 +87,7 @@ jobs:
         list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
     steps:
     - name: creating_puppet_module1
-      if: contains(matrix.runners, 'code_runner')
+      if: contains(matrix.runners, 'code_release')
       uses: pcherukusfdc/release_manager@main
       with:
         repo_name: '${{ inputs.repo_name }}'
