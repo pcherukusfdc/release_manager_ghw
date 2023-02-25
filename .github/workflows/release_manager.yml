@@ -78,7 +78,7 @@ jobs:
     runs-on: ${{ matrix.runners }}
     strategy:
       matrix:
-        runners: ${{ fromJSON(needs.processing_release_manager.outputs.runner_to_use) }}
+        runners: ${{ needs.processing_release_manager.outputs.runner_to_use }}
         list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
     steps:
     - id: step3
