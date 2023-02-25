@@ -25,13 +25,13 @@ jobs:
         
         if [[ ${repo_name} =~ "tb_" ]] ; then
           #runner_is=tableau_runner
-          runner_is=$(cat runner.txt | grep tb | cut -d: -f2)
+          runner_is=$(cat runners.txt | grep tb | cut -d: -f2)
         elif  [[ ${repo_name} =~ "bt_" ]] ; then
           #runner_is=code_release
-          runner_is=$(cat runner.txt | grep bt | cut -d: -f2)
+          runner_is=$(cat runners.txt | grep bt | cut -d: -f2)
         else
           #runner_is=code_release-tableau_runner
-          runner_is=$(cat runner.txt | grep common | cut -d: -f2)
+          runner_is=$(cat runners.txt | grep common | cut -d: -f2)
         fi
         
         #echo ${runner_is}
