@@ -32,7 +32,7 @@ jobs:
           pup=bt_pip
         else
           runner_is=code_release-tableau_runner
-          pup=bt_pup-tb_pup
+          pup=common
         fi
  
         echo "runner_to_use=$(echo $runner_is | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
@@ -85,11 +85,10 @@ jobs:
       matrix:
         runners: ${{ fromJSON(needs.processing_release_manager.outputs.runner_to_use) }}
         list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
-        pup_srv_to_decide: ${{ fromJSON(needs.processing_release_manager.outputs.pup_srv) }}
     steps:
     - name: creating_puppet_module
       uses: pcherukusfdc/release_manager@main
       with:
         repo_name: '${{ inputs.repo_name }}'
         pr_changes: ${{ matrix.list_of_changes }}
-        pup_srv_to_decide: ${{ matrix.pup_srv_to_decide }}
+        pup_srv_to_decide: ${{ needs.processing_release_manager.outputs.pup_srv }}
