@@ -43,7 +43,7 @@ jobs:
         
         if [[ ${repo_name} =~ ^"tb_" ]] ; then
           runner_is='tableau_runner'
-        elsif  [[ ${repo_name} =~ ^"bt_" ]] ; then
+        elif  [[ ${repo_name} =~ ^"bt_" ]] ; then
           runner_is='core_release'
         else
           runner_is='[tableau_runner, core_release]'
