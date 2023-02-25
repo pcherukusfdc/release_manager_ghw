@@ -28,7 +28,7 @@ jobs:
           puppet_servers='ndc-pupma-lp701, ndc-pupcm-lp701, ndc-pupcm-lp702'
         elif  [[ ${repo_name} =~ "bt_" ]] ; then
           runner_is=code_release
-          puppet_servers='phx-pupma-lp701, phx-pupcm-lp701, phx-pupcm-lp702
+          puppet_servers='phx-pupma-lp701, phx-pupcm-lp701, phx-pupcm-lp702'
         else
           runner_is=code_release-tableau_runner
           puppet_servers='phx-pupma-lp701, phx-pupcm-lp701, phx-pupcm-lp702'-'ndc-pupma-lp701, ndc-pupcm-lp701, ndc-pupcm-lp702'
