@@ -41,9 +41,9 @@ jobs:
         echo ${changes}
         echo "changes_to_deploy=$(echo $changes | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         
-        if [[ ${repo_name} =~ ^"tb_" ]] ; then
+        if [ ${repo_name} =~ ^"tb_" ] ; then
           runner_is='tableau_runner'
-        elif  [[ ${repo_name} =~ ^"bt_" ]] ; then
+        elif  [ ${repo_name} =~ ^"bt_" ] ; then
           runner_is='core_release'
         else
           runner_is='[tableau_runner, core_release]'
