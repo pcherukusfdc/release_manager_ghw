@@ -81,7 +81,7 @@ jobs:
         list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
     steps:
     - id: step3
-      name: Deploying puppet module
+      name: creating puppet module
       uses: pcherukusfdc/release_manager@main
       with:
         repo_name: '${{ inputs.repo_name }}'
