@@ -23,11 +23,11 @@ jobs:
         repo_name=$(echo ${org_repo} | cut -d/ -f2)
         
         if [[ ${repo_name} =~ "tb_" ]] ; then
-          echo "runner_is=[tableau_runner]" >> $GITHUB_OUTPUT
+          echo "runner_is=['tableau_runner']" >> $GITHUB_OUTPUT
         elif  [[ ${repo_name} =~ "bt_" ]] ; then
-          echo "runner_is=[code_release]" >> $GITHUB_OUTPUT
+          echo "runner_is=['code_release']" >> $GITHUB_OUTPUT
         else
-          echo "runner_is=[tableau_runner, code_release]" >> $GITHUB_OUTPUT
+          echo "runner_is=['tableau_runner', 'code_release']" >> $GITHUB_OUTPUT
         fi
         
         #echo ${runner_is}
