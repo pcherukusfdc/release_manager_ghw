@@ -24,17 +24,21 @@ jobs:
         
         
         if [[ ${repo_name} =~ "tb_" ]] ; then
-          runner_is=tableau_runner
+          #runner_is=tableau_runner
+          runner_is=$(cat runner.txt | grep tb | cut -d: -f2)
         elif  [[ ${repo_name} =~ "bt_" ]] ; then
-          runner_is=code_release
+          #runner_is=code_release
+          runner_is=$(cat runner.txt | grep bt | cut -d: -f2)
         else
-          runner_is=code_release-tableau_runner
+          #runner_is=code_release-tableau_runner
+          runner_is=$(cat runner.txt | grep common | cut -d: -f2)
         fi
         
         #echo ${runner_is}
         
         #echo "runner_to_use=$(echo ${runner_is})" >> $GITHUB_OUTPUT
-        echo "runner_to_use=$(echo $runner_is | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]' | sed 's/\"//g')" >> $GITHUB_OUTPUT
+        #echo "runner_to_use=$(echo $runner_is | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]' | sed 's/\"//g')" >> $GITHUB_OUTPUT
+        echo "runner_to_use=$(echo $runner_is | tr '-' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         
         cd ~/git
         if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
