@@ -93,7 +93,7 @@ jobs:
         repo_name: '${{ inputs.repo_name }}'
         pr_changes: ${{ matrix.list_of_changes }}
         pup_srv: bt
-    - name: creating_puppet_module1
+    - name: creating_puppet_module2
       if: ${{ matrix.runners }} == 'tableau_runner'
       uses: pcherukusfdc/release_manager@main
       with:
