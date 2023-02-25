@@ -23,11 +23,11 @@ jobs:
         repo_name=$(echo ${org_repo} | cut -d/ -f2)
         
         if [[ ${repo_name} =~ "tb_" ]] ; then
-          runner_is=[tableau_runner]
+          echo "::set-output runner_is=value::[tableau_runner]"
         elif  [[ ${repo_name} =~ "bt_" ]] ; then
-          runner_is=[code_release]
+          echo "::set-output runner_is=value::[code_release]"
         else
-          runner_is='[tableau_runner, core_release]'
+          echo "::set-output runner_is=value::[tableau_runner, code_release]"
         fi
         
         echo ${runner_is}
