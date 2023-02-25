@@ -7,7 +7,7 @@ inputs:
   pr_changes:
     require: true
     type: string
-  pup_srv_to_decide:
+  pup_srv:
     require: true
     type: string
     
@@ -35,9 +35,9 @@ runs:
       sim_lane=$(echo $deploy_changes | cut -d: -f1)
       release_ver=$(echo $deploy_changes | cut -d: -f2)
 
-      if [[ ${{ inputs.pup_srv_to_decide }} =~ 'tb_' ]] ; then
+      if [[ ${{ inputs.pup_srv }} =~ 'tb_' ]] || [[ ${{ inputs.pup_srv }} =~ 'common' ]]; then
         puppet_servers='ndc-pupma-lp701 ndc-pupcm-lp701 ndc-pupcm-lp702'
-      elif [[ ${{ inputs.pup_srv_to_decide }} =~ 'bt' ]] ; then
+      elif [[ ${{ inputs.pup_srv }} =~ 'bt' ]] || [[ ${{ inputs.pup_srv }} =~ 'common' ]]; then
         puppet_servers='phx-pupma-lp701 phx-pupcm-lp701 phx-pupcm-lp702'
       else
         :
