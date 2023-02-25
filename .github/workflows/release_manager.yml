@@ -15,10 +15,10 @@ jobs:
     name: collecting_release_version_for_other
     runs-on: [ self-hosted, linux, code_release ]
     steps:
-    - id: step1
-      name: Checking which files changed 
+    - name: Checking_which_files_changed 
       run: |
-        echo "Get the changes before we merge"
+      
+        echo 'Get the changes before we merge'
         org_repo=${{ inputs.repo_name }}
         repo_name=$(echo ${org_repo} | cut -d/ -f2)
         
@@ -80,8 +80,7 @@ jobs:
         runners: ${{ fromJSON(needs.processing_release_manager.outputs.runner_to_use) }}
         list_of_changes: ${{ fromJSON(needs.processing_release_manager.outputs.changes_from_pr) }}
     steps:
-    - id: step3
-      name: creating puppet module
+    - name: creating_puppet_module
       uses: pcherukusfdc/release_manager@main
       with:
         repo_name: '${{ inputs.repo_name }}'
