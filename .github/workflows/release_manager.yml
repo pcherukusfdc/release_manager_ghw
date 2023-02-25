@@ -22,22 +22,19 @@ jobs:
         org_repo=${{ inputs.repo_name }}
         repo_name=$(echo ${org_repo} | cut -d/ -f2)
         
-        declare -a runner_is
+        
         if [[ ${repo_name} =~ "tb_" ]] ; then
-          runner_is[0]=tableau_runner
-          echo "$runner_is" >> $GITHUB_OUTPUT
+          runner_is='tableau_runner'
         elif  [[ ${repo_name} =~ "bt_" ]] ; then
-          runner_is[0]=code_release
-          echo "$runner_is" >> $GITHUB_OUTPUT
+          runner_is='code_release'
         else
-          runner_is[0]=code_release
-          runner_is[1]=tableau_runner
-          echo "$runner_is" >> $GITHUB_OUTPUT
+          runner_is='code_release tableau_runner'
         fi
         
         #echo ${runner_is}
         
         #echo "runner_to_use=$(echo ${runner_is})" >> $GITHUB_OUTPUT
+        echo "runner_to_use=$(echo $runner_is | jq -R -s -c 'split(" ")[:-1]')"
         
         cd ~/git
         if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
@@ -72,7 +69,7 @@ jobs:
         fi
     outputs:
       changes_from_pr: ${{ steps.step1.outputs.changes_to_deploy }}
-      runner_to_use: ${{ steps.step1.outputs.runner_is }}
+      runner_to_use: ${{ steps.step1.outputs.runner_to_use }}
         
   processing_release_manager_actions_tableau_runner:
     needs: processing_release_manager
