@@ -22,7 +22,17 @@ jobs:
         echo "Get the changes before we merge"
         org_repo=${{ inputs.repo_name }}
         repo_name=$(echo ${org_repo} | cut -d/ -f2)
-                
+        
+        if [ ${repo_name} =~ ^"tb_" ] ; then
+          runner_is='tableau_runner'
+        elif  [ ${repo_name} =~ ^"bt_" ] ; then
+          runner_is='core_release'
+        else
+          runner_is='[tableau_runner, core_release]'
+        fi
+        
+        echo "runner_to_use=$(echo ${runner_is})" >> $GITHUB_OUTPUT
+        
         cd ~/git
         if [[ -d ${repo_name} ]] ;  then rm -rf ${repo_name} ; fi
           
@@ -40,17 +50,7 @@ jobs:
           
         echo ${changes}
         echo "changes_to_deploy=$(echo $changes | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
-        
-        if [ ${repo_name} =~ ^"tb_" ] ; then
-          runner_is='tableau_runner'
-        elif  [ ${repo_name} =~ ^"bt_" ] ; then
-          runner_is='core_release'
-        else
-          runner_is='[tableau_runner, core_release]'
-        fi
-        
-        echo "runner_to_use=$(echo ${runner_is})" >> $GITHUB_OUTPUT
-        
+            
         echo "Merging PR...."
         gh pr merge --merge
         if [ $? -ne 0 ]; then
@@ -69,10 +69,11 @@ jobs:
       runner_to_use: ${{ steps.step1.outputs.runner_to_use }}
         
   processing_release_manager_actions_tableau_runner:
-    if: |
-      success() ||
-      startsWith(inputs.repo_name, 'pcherukusfdc/tb') ||
-      (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
+    needs: processing_release_manager
+    #if: |
+    #  success() ||
+    #  startsWith(inputs.repo_name, 'pcherukusfdc/tb') ||
+    #  (!startsWith(inputs.repo_name, 'pcherukusfdc/tb') && !startsWith(inputs.repo_name, 'pcherukusfdc/bt'))
     runs-on: ${{ matrix.runners }}
     strategy:
       matrix:
