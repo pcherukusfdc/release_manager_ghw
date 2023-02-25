@@ -23,7 +23,6 @@ jobs:
         repo_name=$(echo ${org_repo} | cut -d/ -f2)
         
         if [[ ${repo_name} =~ "tb_" ]] ; then
-          echo "::set-output name=runner_is::[tableau_runner]"
           echo "runner_is=[tableau_runner]" >> $GITHUB_STATE
         elif  [[ ${repo_name} =~ "bt_" ]] ; then
           echo "runner_is=[code_release]" >> $GITHUB_STATE
